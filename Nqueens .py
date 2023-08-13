@@ -1,31 +1,34 @@
-class solution:
-    def solveNQueens(self, n:int) -> list[list[str]]:
-        col =set()
-        pdiag= set()
-        ndiag= set()
-        
-        res=[]
-        board=[["."]* n for i in range(n)]
-        
-        def backtracker(r):
-            if r == n:
-                copy = ["".join(row) for row in board]
-                res.append(copy)
-                return
-            for c in range(n):
-                if c in col or(r+c) in pdiag or(r-c) in ndiag:
-                    continue
-                
-                col.add(c)
-                pdiag.add(r+c)
-                ndiag.add(r-c)
-                board[r][c]='Q'
-                
-                backtracker(r+1)
-                
-                col.remove(c)
-                pdiag.remove(r+c)
-                ndiag.remove(r-c)
-                board[r][c]="."
-        backtracker(0)
-        return res
+n=int(input("Enter a number of n:"))
+
+board=[[0 for i in range(n)]for i in range(n)]
+
+def check_column(board,row,column):
+    for i in range(row,-1,-1):
+        if board[i][column]==1:
+            return False
+    return True
+
+def check_diagonal(board,row,column):
+    for i,j in zip(range(row,-1,-1),range(column,-1,-1)):
+            if board[i][j]==1:
+                return False 
+    for i,j in zip(range(row,-1,-1),range(column,n)):
+            if board[i][j]==1:
+                return False
+    return True
+
+def nqn(board,row):
+    if row==n:
+        return True
+    
+    for i in range(n):
+        if(check_column(board,row,i)==True and check_diagonal(board,row,i)==True):
+            board[row][i]=1
+            if nqn(board,row+1):
+                return True
+            board[row][i]=0
+    return False
+    
+nqn(board,0)
+for row in board:
+    print(row)
